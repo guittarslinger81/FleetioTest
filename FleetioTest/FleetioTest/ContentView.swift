@@ -27,23 +27,77 @@ struct ContentView: View {
                     Text(errorMessage)
                 } else {
                     HStack {
-                        
-                    }
-                    List(vehicleListResults) { vehicle in
-                        HStack {
-                            AsyncImage(url: URL(string: vehicle.defaultImageUrlSmall ?? "https://unsplash.com/photos/black-porsche-911-on-road-during-daytime-MPdl02hySb0")) { image in
-                                image.image?.resizable()
-                                image.image?.aspectRatio(contentMode: .fit)
+                        Spacer()
+                        LabeledContent {
+                            TextField("Filter by name", text: $name)
+                                .onChange(of: name) { newValue in
+                                    if newValue.isEmpty {
+                                        Task {
+                                            do {
+                                                try await loadVehicleList()
+                                            } catch {
+                                                
+                                                errorMessage = error.localizedDescription
+                                                print(errorMessage)
+                                            }
+                                        }
+                                    }
+                                }
+                        } label: {
+                            Text("Filter")
+                                .font(.headline)
+                        }
+                        Button("Go") {
+                            Task {
+                                do {
+                                    try await filter()
+                                } catch {
+                                    
+                                    errorMessage = error.localizedDescription
+                                    print(errorMessage)
+                                }
                             }
-                            .frame(width:100, height:100)
-                            VStack(alignment: .leading) {
-                                Text(vehicle.name)
-                                Text(vehicle.ownership)
-                                Text(vehicle.vehicleStatusName)
-                                Text(vehicle.vehicleTypeName)
+                        }.disabled(name.isEmpty)
+                        Spacer()
+                    }
+                    List(vehicleListResults, id: \.self) { vehicle in
+                        NavigationLink(destination: VehicleDetailView(vehicle: vehicle)) {
+                            HStack {
+                                AsyncImage(url: URL(string: vehicle.defaultImageUrlSmall ?? "https://d8g9nhlfs6lwh.cloudfront.net/security=policy:eyJoYW5kbGUiOiJwVVJBZWdyY1NUT3E4ZEwwa1dvbCIsImV4cGlyeSI6NDUzNDk0OTM0MywiY2FsbCI6WyJyZWFkIiwiY29udmVydCJdfQ==,signature:452da8ad2dfe8631a5a7aac3c553c98c9cdd5072cacf6a2893104ed0cda744a8/resize=w:150,h:150,fit:crop/cache=expiry:max/rotate=exif:true/pURAegrcSTOq8dL0kWol")) { phase in
+                                    if let image = phase.image {
+                                        image.resizable()
+                                        } else if phase.error != nil {
+                                            Color.pink
+                                        } else {
+                                            Color.gray
+                                        }
+                                }
+                                .frame(width:100, height:100)
+                                VStack(alignment: .leading) {
+                                    Text(vehicle.name)
+                                    Text(vehicle.make ?? "Make not available")
+                                    Text(vehicle.model ?? "Model not available")
+                                    Text(vehicle.licensePlate ?? "License not available")
+                                    Text(vehicle.vehicleTypeName)
+                                }
+                                .onAppear {
+                                    if vehicle == vehicleListResults.last && nextPage != "" {
+                                        Task {
+                                            do {
+                                                try await loadNextPage()
+                                            } catch {
+                                                
+                                                errorMessage = error.localizedDescription
+                                                print(errorMessage)
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
+                        
                     }
+                    .navigationTitle("Vehicle Details")
                 }
             }
             .navigationTitle("Vehicles")
@@ -63,7 +117,6 @@ struct ContentView: View {
         let (data, _) = try await URLSession.shared.data(for: request)
         let response = try JSONDecoder().decode(Response.self, from: data)
         vehicleListResults = response.records
-        print(vehicleListResults[0].defaultImageUrlSmall)
         startCursor = response.startCursor ?? ""
         nextPage = response.nextCursor ?? ""
         remaining = response.estimatedRemainingCount
@@ -86,6 +139,7 @@ struct ContentView: View {
         let request = apiHelper.filterByName(name: name)
         let (data, _) = try await URLSession.shared.data(for: request)
         let response = try JSONDecoder().decode(Response.self, from: data)
+        print(response)
         vehicleListResults = response.records
         startCursor = response.startCursor ?? ""
         nextPage = response.nextCursor ?? ""

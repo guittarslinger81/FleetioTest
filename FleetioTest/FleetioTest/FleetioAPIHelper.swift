@@ -22,7 +22,7 @@ struct FleetioAPIHelper {
     }
     
     func getNextPage(startCursor: String) -> URLRequest {
-        let urlString = "\(baseURL)start_cursor=\(startCursor)"
+        let urlString = "\(baseURL)?start_cursor=\(startCursor)"
         guard let url = URL(string: urlString) else { return URLRequest(url: URL(string: urlString)!) }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -33,7 +33,7 @@ struct FleetioAPIHelper {
     }
     
     func filterByName(name: String) -> URLRequest {
-        let urlString = "\(baseURL)filter[name][like]=\(name)"
+        let urlString = "\(baseURL)?filter[name][like]=\(name)"
         guard let url = URL(string: urlString) else { return URLRequest(url: URL(string: urlString)!)}
         var request = URLRequest(url: url)
         request.httpMethod = "GET"

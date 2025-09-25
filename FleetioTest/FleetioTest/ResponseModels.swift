@@ -28,13 +28,13 @@ struct Response: Codable {
 }
 
 struct Filter: Codable {
-    var name: [FilterLike]?
-    var vin: [FilterLike]?
-    var licensePlate: [FilterLike]?
-    var externalId: [FilterLike]?
-    var labels: [FilterLike]?
-    var createdAt: [FilterLike]?
-    var updatedAt: [FilterLike]?
+    var name: FilterLike?
+    var vin: FilterLike?
+    var licensePlate: FilterLike?
+    var externalId: FilterLike?
+    var labels: FilterLike?
+    var createdAt: FilterLike?
+    var updatedAt: FilterLike?
     
     enum CodingKeys: String, CodingKey {
         case name = "name"
@@ -65,7 +65,7 @@ struct Sort: Codable {
     }
 }
 
-struct VehicleRecord: Codable, Identifiable {
+struct VehicleRecord: Codable, Identifiable, Equatable, Hashable {
     var id: Int
     var accountId: Int
     var archivedAt: Date?
@@ -191,19 +191,19 @@ struct VehicleRecord: Codable, Identifiable {
     }
 }
 
-struct VehicleLabel: Codable {
+struct VehicleLabel: Codable, Equatable, Hashable {
     var id: Int
     var name: String
 }
 
-struct CustomField: Codable {
+struct CustomField: Codable, Equatable, Hashable {
     
 }
 
-struct Driver: Codable {
+struct Driver: Codable, Equatable, Hashable {
     
 }
 
-struct ExternalIds: Codable {
+struct ExternalIds: Codable, Equatable, Hashable {
     
 }
