@@ -65,7 +65,7 @@ struct Sort: Codable {
     }
 }
 
-struct VehicleRecord: Codable {
+struct VehicleRecord: Codable, Identifiable {
     var id: Int
     var accountId: Int
     var archivedAt: Date
