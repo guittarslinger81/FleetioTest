@@ -74,11 +74,31 @@ struct ContentView: View {
                                 }
                                 .frame(width:100, height:100)
                                 VStack(alignment: .leading) {
-                                    Text(vehicle.name)
-                                    Text(vehicle.make ?? "Make not available")
-                                    Text(vehicle.model ?? "Model not available")
-                                    Text(vehicle.licensePlate ?? "License not available")
-                                    Text(vehicle.vehicleTypeName)
+                                    LabeledContent {
+                                        Text(vehicle.name ?? "Not available")
+                                    } label: {
+                                        Text("Name: ")
+                                    }
+                                    LabeledContent {
+                                        Text(vehicle.make ?? "Not available")
+                                    } label: {
+                                        Text("Make: ")
+                                    }
+                                    LabeledContent {
+                                        Text(vehicle.model ?? "Not available")
+                                    } label: {
+                                        Text("Model: ")
+                                    }
+                                    LabeledContent {
+                                        Text(vehicle.licensePlate ?? "Not available")
+                                    } label: {
+                                        Text("Plate: ")
+                                    }
+                                    LabeledContent {
+                                        Text(vehicle.vehicleTypeName ?? "Not available")
+                                    } label: {
+                                        Text("Type: ")
+                                    }
                                 }
                                 .onAppear {
                                     if vehicle == vehicleListResults.last && nextPage != "" {
