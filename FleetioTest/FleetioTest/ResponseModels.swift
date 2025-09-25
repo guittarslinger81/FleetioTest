@@ -8,8 +8,8 @@
 import Foundation
 
 struct Response: Codable {
-    var startCursor: String
-    var nextCursor: String
+    var startCursor: String?
+    var nextCursor: String?
     var perPage: Int
     var estimatedRemainingCount: Int
     var filteredBy: [Filter]
@@ -68,37 +68,37 @@ struct Sort: Codable {
 struct VehicleRecord: Codable, Identifiable {
     var id: Int
     var accountId: Int
-    var archivedAt: Date
-    var fuelTypeId: Int
-    var fuelTypeName: String
+    var archivedAt: Date?
+    var fuelTypeId: Int?
+    var fuelTypeName: String?
     var fuelVolumeUnits: String
-    var groupId: Int
-    var groupName: String
+    var groupId: Int?
+    var groupName: String?
     var name: String
     var ownership: String
-    var currentLocationEntryId: Int
+    var currentLocationEntryId: Int?
     var systemOfMeasurement: String
+    var isSample: Bool
     var vehicleTypeId: Int
     var vehicleTypeName: String
-    var isSample: Bool
     var vehicleStatusId: Int
     var vehicleStatusName: String
-    var vehicleStatusColor: String
-    var primaryMeterUnit: String
-    var primaryMeterValue: String
-    var primaryMeterDate: Date
-    var primaryMeterUsagePerDay: String
-    var secondaryMeterUnit: String
-    var secondaryMeterValue: String
-    var secondaryMeterDate: Date
-    var secondaryMeterUsagePerDay: String
-    var inServiceMeterValue: String
-    var inServiceDate: Date
-    var outOfServiceMeterValue: String
-    var outOfServiceDate: Date
-    var estimatedServiceMonths: Int
-    var estimatedReplacementMileage: String
-    var estimatedResalePriceCents: Int
+    var vehicleStatusColor: String?
+    var primaryMeterUnit: String?
+    var primaryMeterValue: String?
+    var primaryMeterDate: Date?
+    var primaryMeterUsagePerDay: String?
+    var secondaryMeterUnit: String?
+    var secondaryMeterValue: String?
+    var secondaryMeterDate: Date?
+    var secondaryMeterUsagePerDay: String?
+    var inServiceMeterValue: String?
+    var inServiceDate: Date?
+    var outOfServiceMeterValue: String?
+    var outOfServiceDate: Date?
+    var estimatedServiceMonths: Int?
+    var estimatedReplacementMileage: String?
+    var estimatedResalePriceCents: Int?
     var fuelEntriesCount: Int
     var serviceEntriesCount: Int
     var serviceRemindersCount: Int
@@ -109,21 +109,22 @@ struct VehicleRecord: Codable, Identifiable {
     var issuesCount: Int
     var workOrdersCount: Int
     var labels: [VehicleLabel]
-    var groupAncestry: String
-    var color: String
-    var licensePlate: String
-    var vin: String
-    var year: String
-    var make: String
-    var model: String
-    var trim: String
-    var registrationExpirationMonth: Int
-    var registrationState: String
-    var defaultImageUrlSmall: String
+    var groupAncestry: String?
+    var color: String?
+    var licensePlate: String?
+    var vin: String?
+    var year: String?
+    var make: String?
+    var model: String?
+    var trim: String?
+    var registrationExpirationMonth: Int?
+    var registrationState: String?
+    var defaultImageUrlSmall: String?
     var aiEnabled: Bool
+    var externalIds: ExternalIds?
     var assetableType: String
     var customFields: CustomField
-    var axleConfigId: Int
+    var axleConfigId: Int?
     var driver: Driver
     
     enum CodingKeys: String, CodingKey {
@@ -182,6 +183,7 @@ struct VehicleRecord: Codable, Identifiable {
         case registrationState = "registration_state"
         case defaultImageUrlSmall = "default_image_url_small"
         case aiEnabled = "ai_enabled"
+        case externalIds = "external_ids"
         case assetableType = "assetable_type"
         case customFields = "custom_fields"
         case axleConfigId = "axle_config_id"
@@ -199,5 +201,9 @@ struct CustomField: Codable {
 }
 
 struct Driver: Codable {
+    
+}
+
+struct ExternalIds: Codable {
     
 }

@@ -26,11 +26,32 @@ struct ContentView: View {
                 } else if let errorMessage {
                     Text(errorMessage)
                 } else {
+                    HStack {
+                        
+                    }
                     List(vehicleListResults) { vehicle in
-                        VStack(alignment: .leading) {
-                            
+                        HStack {
+                            AsyncImage(url: URL(string: vehicle.defaultImageUrlSmall ?? "https://unsplash.com/photos/black-porsche-911-on-road-during-daytime-MPdl02hySb0")) { image in
+                                image.image?.resizable()
+                                image.image?.aspectRatio(contentMode: .fit)
+                            }
+                            .frame(width:100, height:100)
+                            VStack(alignment: .leading) {
+                                Text(vehicle.name)
+                                Text(vehicle.ownership)
+                                Text(vehicle.vehicleStatusName)
+                                Text(vehicle.vehicleTypeName)
+                            }
                         }
                     }
+                }
+            }
+            .navigationTitle("Vehicles")
+            .task {
+                do {
+                    try await loadVehicleList()
+                } catch {
+                    errorMessage = error.localizedDescription
                 }
             }
         }
@@ -42,8 +63,9 @@ struct ContentView: View {
         let (data, _) = try await URLSession.shared.data(for: request)
         let response = try JSONDecoder().decode(Response.self, from: data)
         vehicleListResults = response.records
-        startCursor = response.startCursor
-        nextPage = response.nextCursor
+        print(vehicleListResults[0].defaultImageUrlSmall)
+        startCursor = response.startCursor ?? ""
+        nextPage = response.nextCursor ?? ""
         remaining = response.estimatedRemainingCount
         isLoading.toggle()
     }
@@ -54,7 +76,7 @@ struct ContentView: View {
         let (data, _) = try await URLSession.shared.data(for: request)
         let response = try JSONDecoder().decode(Response.self, from: data)
         vehicleListResults = vehicleListResults + response.records
-        nextPage = response.nextCursor
+        nextPage = response.nextCursor ?? ""
         remaining = response.estimatedRemainingCount
         isLoading.toggle()
     }
@@ -65,8 +87,8 @@ struct ContentView: View {
         let (data, _) = try await URLSession.shared.data(for: request)
         let response = try JSONDecoder().decode(Response.self, from: data)
         vehicleListResults = response.records
-        startCursor = response.startCursor
-        nextPage = response.nextCursor
+        startCursor = response.startCursor ?? ""
+        nextPage = response.nextCursor ?? ""
         remaining = response.estimatedRemainingCount
         isLoading.toggle()
     }
